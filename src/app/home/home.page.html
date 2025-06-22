@@ -1,6 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> PokeExplorer </ion-title>
+    <ion-title> 
+      PokeExplorer 
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,9 +13,13 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-list>
-    <ion-item *ngFor="let pokemon of pokemons">
-      <ion-label>{{ pokemon.name }}</ion-label>
-    </ion-item>
-  </ion-list>
+  <div class="pokemon-list">
+    <ion-card *ngFor="let pokemon of pokemons">
+      <ion-img [src]="pokemon.image" [alt]="pokemon.name" class="pokemon-image"></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ pokemon.name | titlecase }}</ion-card-title>
+        </ion-card-header>
+      </ion-card>
+  </div>
+
 </ion-content>
