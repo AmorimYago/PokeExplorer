@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { PokemonService } from '../services/pokemon.service';
+import { FavoriteService } from '../services/favorite.service';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonList, IonItem, IonText, IonButtons, IonBackButton, IonSpinner } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { heartOutline, heartSharp } from 'ionicons/icons'
@@ -41,7 +42,8 @@ export class DetailsPage implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private PokemonService: PokemonService
+    private pokemonService: PokemonService,
+    private favoriteService: FavoriteService
   ) { 
     addIcons({ heartOutline, heartSharp});
   }
@@ -56,10 +58,11 @@ export class DetailsPage implements OnInit {
 
   loadPokemonDetails(id: string) {
     this.isLoading = true;
-    this.PokemonService.getPokemonDetails(id).subscribe(
+    this.pokemonService.getPokemonDetails(id).subscribe(
       (data: any) => {
         this.pokemonDetails = data;
         console.log('POkemon Details: ', this.pokemonDetails);
+        this.isFavorite = this.favoriteService.isPokemonFavorite(this.pokemonDetails.id);
         this.isLoading = false;
         // TODO: In future, check if is a favorite here
       },
@@ -71,11 +74,11 @@ export class DetailsPage implements OnInit {
     );
   }
 
-    // Placeholder method for the bookmark - to be implemented later
     toggleFavorite() {
-      this.isFavorite = !this.isFavorite;
-      // Logic to add/remove from favorites (future)
-      console.log(`Pokemon ${this.pokemonDetails.name} is now ${this.isFavorite ? 'favorited' :  'unfavorited'}`);
+      if(this.pokemonDetails) {
+        this.isFavorite = this.favoriteService.toggleFavorite(this.pokemonDetails);
+      }
+      console.log(`Pokemon ${this.pokemonDetails.name} favorite status toggled to: ${this.isFavorite}`);
     }
 
 }
