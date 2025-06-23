@@ -61,24 +61,32 @@ export class DetailsPage implements OnInit {
     this.pokemonService.getPokemonDetails(id).subscribe(
       (data: any) => {
         this.pokemonDetails = data;
-        console.log('POkemon Details: ', this.pokemonDetails);
+        console.log('Pokemon Details: ', this.pokemonDetails);
         this.isFavorite = this.favoriteService.isPokemonFavorite(this.pokemonDetails.id);
         this.isLoading = false;
         // TODO: In future, check if is a favorite here
       },
       (error) => {
-        console.error('Error loading POkemon details: ', error);
+        console.error('Error loading Pokemon details: ', error);
         this.isLoading = false;
         // TODO: Implement user feedback in the event of an error
       }
     );
   }
 
-    toggleFavorite() {
-      if(this.pokemonDetails) {
-        this.isFavorite = this.favoriteService.toggleFavorite(this.pokemonDetails);
-      }
-      console.log(`Pokemon ${this.pokemonDetails.name} favorite status toggled to: ${this.isFavorite}`);
+  toggleFavorite() {
+    if (this.pokemonDetails) {
+      // Cria um objeto com a estrutura esperada pelo FavoriteService e pela FavoritesPage
+      const pokemonToSave = {
+        id: this.pokemonDetails.id,
+        name: this.pokemonDetails.name,
+        image: this.pokemonDetails.sprites.front_default, // <-- Adiciona a URL da imagem aqui
+        // Você pode adicionar outras propriedades que queira salvar diretamente
+        // para não precisar buscar os detalhes completos novamente na tela de favoritos
+      };
+      this.isFavorite = this.favoriteService.toggleFavorite(pokemonToSave);
+      console.log(`Pokemon ${pokemonToSave.name} favorite status toggled to: ${this.isFavorite}`);
     }
+  }
 
 }
