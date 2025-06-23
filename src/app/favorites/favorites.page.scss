@@ -1,0 +1,43 @@
+ion-toolbar {
+    --background: var(--ion-color-primary);
+    --color: #fff;
+  }
+  
+  .no-favorites-message {
+    text-align: center;
+    padding: 20px;
+    color: var(--ion-color-medium);
+  
+    ion-button {
+      margin-top: 10px;
+    }
+  }
+  
+  .pokemon-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+  
+    ion-card {
+      width: 150px;
+      margin: 8px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+  
+      .pokemon-image {
+        height: 96px;
+        width: 96px;
+        margin: 10px auto 0;
+        object-fit: contain;
+      }
+  
+      ion-card-title {
+        font-size: 1.1em;
+        font-weight: bold;
+        text-transform: capitalize;
+        padding: 0 10px 10px;
+      }
+    }
+  }

@@ -1,24 +1,27 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> PokeExplorer </ion-title>
-    <ion-buttons slot="end">
-      <ion-button routerLink="/favorites">
-        <ion-icon name="heart"></ion-icon>
-      </ion-button>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
+    <ion-title> My Favorite Pokémons </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Pokémons</ion-title>
+      <ion-title size="large">Favorites</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div class="pokemon-list">
+  <div *ngIf="favoritePokemons.length === 0" class="no-favorites-message">
+    <p>You haven't favorited any Pokémons yet!</p>
+    <ion-button routerLink="/home" fill="clear">Explore Pokémons</ion-button>
+  </div>
+
+  <div *ngIf="favoritePokemons.length > 0" class="pokemon-list">
     <ion-card
-      *ngFor="let pokemon of pokemons"
+      *ngFor="let pokemon of favoritePokemons"
       [routerLink]="['/details', pokemon.id]"
     >
       <ion-img
@@ -31,15 +34,4 @@
       </ion-card-header>
     </ion-card>
   </div>
-
-  <ion-infinite-scroll
-    (ionInfinite)="loadPokemons($event)"
-    [disabled]="!canLoadMore"
-  >
-    <ion-infinite-scroll-content
-      loadingSpinner="circles"
-      loadingText="Loading more Pokémons..."
-    >
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 </ion-content>

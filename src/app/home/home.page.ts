@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonInfiniteScroll, IonInfiniteScrollContent  } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
+  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg,
+  IonInfiniteScroll, IonInfiniteScrollContent,
+  IonButtons, IonButton, IonIcon  } from '@ionic/angular/standalone';
 import { PokemonService } from '../services/pokemon.service';
 import { forkJoin, Observable } from 'rxjs';
+import { addIcons } from 'ionicons';
+import { heart } from 'ionicons/icons';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +29,9 @@ import { forkJoin, Observable } from 'rxjs';
     IonImg,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonButtons,
+    IonButton,
+    IonIcon,
     CommonModule,
     RouterLink
   ],
@@ -34,7 +42,9 @@ export class HomePage implements OnInit {
   limit: number = 56;
   canLoadMore: boolean = true;
 
-  constructor(private pokemonService: PokemonService) {}
+  constructor(private pokemonService: PokemonService) {
+    addIcons({ heart });
+  }
 
   ngOnInit() {
       this.loadPokemons();
