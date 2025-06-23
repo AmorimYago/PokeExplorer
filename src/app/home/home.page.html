@@ -26,4 +26,15 @@
       </ion-card-header>
     </ion-card>
   </div>
+
+  <ion-infinite-scroll
+    (ionInfinite)="loadPokemons($event)"
+    [disabled]="!canLoadMore"
+  >
+    <ion-infinite-scroll-content
+      loadingSpinner="circles"
+      loadingText="Loading more Pokémons..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

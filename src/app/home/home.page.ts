@@ -1,27 +1,29 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonInfiniteScroll, IonInfiniteScrollContent  } from '@ionic/angular/standalone';
 import { PokemonService } from '../services/pokemon.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonList, 
-    IonItem, 
-    IonLabel, 
-    IonCard, 
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonCard,
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
-    IonImg, 
+    IonImg,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
     CommonModule,
     RouterLink
   ],
@@ -29,7 +31,8 @@ import { forkJoin } from 'rxjs';
 export class HomePage implements OnInit {
   pokemons: any [] = [];
   offset: number = 0;
-  limit: number = 51;
+  limit: number = 56;
+  canLoadMore: boolean = true;
 
   constructor(private pokemonService: PokemonService) {}
 
@@ -37,11 +40,10 @@ export class HomePage implements OnInit {
       this.loadPokemons();
   }
 
-  loadPokemons() {
+  loadPokemons(event?: any) {
     this.pokemonService.getPokemonList(this.offset, this.limit).subscribe(
       (data: any) => {
-        // PokeAPI returns an object with ‘results’ which is an array of { name: string, url: string }
-        const pokemonRequests = data.results.map((pokemon: any) =>
+        const pokemonRequests: Observable<any>[] = data.results.map((pokemon: any) =>
           this.pokemonService.getPokemonDetails(pokemon.name)
       );
 
@@ -59,16 +61,38 @@ export class HomePage implements OnInit {
               id: details.id
             };
           });
+
           this.pokemons = [...this.pokemons, ...completePokemons];
-          console.log('Pokemons loaded: ', this.pokemons);
+          this.offset += this.limit;
+
+          if (data.results.length < this.limit) {
+            this.canLoadMore = false;
+          }
+
+
+          console.log('Pokemons loaded: ', this.pokemons.length);
+          if (event) {
+            event.target.complete();
+            event.target.disabled = !this.canLoadMore;
+          }
         },
         (error) => {
           console.error('Error loading Pokemon details: ', error);
+          this.canLoadMore = false;
+          if (event) {
+            event.target.complete();
+            event.target.disabled = true;
+          }
         }
       );
       },
       (error) => {
         console.error('Error loading Pokemons: ', error);
+        this.canLoadMore = false;
+        if (event) {
+          event.target.complete();
+          event.target.disabled = true;
+        }
         // TODO Implement more user-friendly error handling
       }
     );
