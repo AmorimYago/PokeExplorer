@@ -1,8 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> 
-      PokeExplorer 
-    </ion-title>
+    <ion-title> PokeExplorer </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -14,12 +12,18 @@
   </ion-header>
 
   <div class="pokemon-list">
-    <ion-card *ngFor="let pokemon of pokemons">
-      <ion-img [src]="pokemon.image" [alt]="pokemon.name" class="pokemon-image"></ion-img>
+    <ion-card
+      *ngFor="let pokemon of pokemons"
+      [routerLink]="['/details', pokemon.id]"
+    >
+      <ion-img
+        [src]="pokemon.image"
+        [alt]="pokemon.name"
+        class="pokemon-image"
+      ></ion-img>
       <ion-card-header>
         <ion-card-title>{{ pokemon.name | titlecase }}</ion-card-title>
-        </ion-card-header>
-      </ion-card>
+      </ion-card-header>
+    </ion-card>
   </div>
-
 </ion-content>

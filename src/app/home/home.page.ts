@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// Imports of standalone Ionic components that you will use in HTML
+import { RouterLink } from '@angular/router';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg } from '@ionic/angular/standalone';
 import { PokemonService } from '../services/pokemon.service';
 import { forkJoin } from 'rxjs';
@@ -22,7 +22,8 @@ import { forkJoin } from 'rxjs';
     IonCardTitle,
     IonCardContent,
     IonImg, 
-    CommonModule
+    CommonModule,
+    RouterLink
   ],
 })
 export class HomePage implements OnInit {
