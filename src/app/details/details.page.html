@@ -1,13 +1,111 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>details</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title> {{ pokemonDetails?.name | titlecase }} Details </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFavorite()">
+        <ion-icon
+          [name]="isFavorite ? 'heart-sharp' : 'heart-outline'"
+        ></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">details</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div *ngIf="isLoading" class="loading-spinner">
+    <ion-spinner name="circles"></ion-spinner>
+    <p>Loading Pokemon details...</p>
+  </div>
+
+  <div *ngIf="!isLoading && pokemonDetails" class="pokemon-details-container">
+    <ion-card class="main-info-card">
+      <ion-img
+        [src]="pokemonDetails.sprites.front_default"
+        [alt]="pokemonDetails.name"
+        class="main-pokemon-image"
+      ></ion-img>
+      <ion-card-header>
+        <ion-card-title>{{ pokemonDetails.name | titlecase }}</ion-card-title>
+        <ion-text>
+          <p>ID: #{{ pokemonDetails.id }}</p>
+        </ion-text>
+      </ion-card-header>
+      <ion-card-content>
+        <p>
+          <strong>Height:</strong> {{ pokemonDetails.height / 10 |
+          number:'1.1-1' }} m
+        </p>
+        <p>
+          <strong>Weight:</strong> {{ pokemonDetails.weight / 10 |
+          number:'1.1-1' }} kg
+        </p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Types</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let type of pokemonDetails.types">
+            <ion-label>{{ type.type.name | titlecase }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Abilities</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let ability of pokemonDetails.abilities">
+            <ion-label>{{ ability.ability.name | titlecase }}</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Base Stats</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let stat of pokemonDetails.stats">
+            <ion-label>{{ stat.stat.name | titlecase }}:</ion-label>
+            <ion-text slot="end">{{ stat.base_stat }}</ion-text>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Other Sprites</ion-card-title>
+      </ion-card-header>
+      <ion-card-content class="sprite-gallery">
+        <ion-img
+          *ngIf="pokemonDetails.sprites.back_default"
+          [src]="pokemonDetails.sprites.back_default"
+          alt="Back Default"
+        ></ion-img>
+        <ion-img
+          *ngIf="pokemonDetails.sprites.front_shiny"
+          [src]="pokemonDetails.sprites.front_shiny"
+          alt="Front Shiny"
+        ></ion-img>
+        <ion-img
+          *ngIf="pokemonDetails.sprites.back_shiny"
+          [src]="pokemonDetails.sprites.back_shiny"
+          alt="Back Shiny"
+        ></ion-img>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
