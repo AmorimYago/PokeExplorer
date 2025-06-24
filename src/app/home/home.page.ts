@@ -51,7 +51,7 @@ export class HomePage implements OnInit {
   }
 
   loadPokemons(event?: any) {
-    this.pokemonService.getPokemonList(this.offset, this.limit).subscribe(
+    this.pokemonService.getPokemons(this.offset, this.limit).subscribe(
       (data: any) => {
         const pokemonRequests: Observable<any>[] = data.results.map((pokemon: any) =>
           this.pokemonService.getPokemonDetails(pokemon.name)
@@ -63,10 +63,11 @@ export class HomePage implements OnInit {
           // Combines the original data (name, url) with the full details
           const completePokemons = data.results.map((pokemon: any, index: number) => {
             const details = pokemonDetails[index];
+            const imageUrl = details.sprites.other?.['official-artwork']?.front_default || details.sprites.front_default || 'assets/placeholder.png';
             return {
               name: pokemon.name,
               url: pokemon.url,
-              image: details.sprites.front_default,
+              image: imageUrl,
               // TODO Add other details here in the future 
               id: details.id
             };

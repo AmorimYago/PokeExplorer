@@ -25,6 +25,7 @@
         [src]="pokemon.image"
         [alt]="pokemon.name"
         class="pokemon-image"
+        (ionError)="pokemon.image = 'assets/placeholder.png'"
       ></ion-img>
       <ion-card-header>
         <ion-card-title>{{ pokemon.name | titlecase }}</ion-card-title>
