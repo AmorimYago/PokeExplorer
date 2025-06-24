@@ -5,7 +5,7 @@ import { PokemonService } from '../services/pokemon.service';
 import { FavoriteService } from '../services/favorite.service';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonIcon, IonLabel, IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonImg, IonList, IonItem, IonText, IonButtons, IonBackButton, IonSpinner } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { heartOutline, heartSharp } from 'ionicons/icons'
+import { heartOutline, heartSharp } from 'ionicons/icons';
 
 @Component({
   selector: 'app-details',
@@ -76,13 +76,10 @@ export class DetailsPage implements OnInit {
 
   toggleFavorite() {
     if (this.pokemonDetails) {
-      // Cria um objeto com a estrutura esperada pelo FavoriteService e pela FavoritesPage
       const pokemonToSave = {
         id: this.pokemonDetails.id,
         name: this.pokemonDetails.name,
-        image: this.pokemonDetails.sprites.front_default, // <-- Adiciona a URL da imagem aqui
-        // Você pode adicionar outras propriedades que queira salvar diretamente
-        // para não precisar buscar os detalhes completos novamente na tela de favoritos
+        image: this.pokemonDetails.sprites.front_default,
       };
       this.isFavorite = this.favoriteService.toggleFavorite(pokemonToSave);
       console.log(`Pokemon ${pokemonToSave.name} favorite status toggled to: ${this.isFavorite}`);

@@ -28,29 +28,38 @@
 
 .pokemon-list {
   display: flex;
-  flex-wrap: wrap; // Permite que os cards quebrem para a próxima linha
-  justify-content: center; // Centraliza os cards
+  flex-wrap: wrap; 
+  justify-content: center;
   padding: 10px;
 
   ion-card {
-    width: 150px; // Largura fixa para os cards (ajuste conforme preferir)
+    flex: 0 0 calc(50% - 16px);
+    max-width: 150px;
     margin: 8px;
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Sombra suave
-    border-radius: 8px; // Cantos arredondados
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    @media (min-width: 576px) {
+      flex: 0 0 calc(33.33% - 16px);
+    }
+
+    @media (min-width: 768px) {
+      flex: 0 0 calc(25% - 16px);
+    }
 
     .pokemon-image {
-      height: 96px; // Tamanho padrão dos sprites da PokeAPI (96x96)
+      height: 96px;
       width: 96px;
-      margin: 10px auto 0; // Centraliza a imagem e adiciona margem
-      object-fit: contain; // Garante que a imagem se encaixe sem cortar
+      margin: 10px auto 0;
+      object-fit: contain;
     }
 
     ion-card-title {
       font-size: 1.1em;
       font-weight: bold;
-      text-transform: capitalize; // Garante que o nome comece com maiúscula
-      padding: 0 10px 10px; // Ajusta o padding para o título
+      text-transform: capitalize;
+      padding: 0 10px 10px;
     }
   }
 }
