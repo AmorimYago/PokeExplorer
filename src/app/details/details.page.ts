@@ -102,46 +102,53 @@ export class DetailsPage implements OnInit {
         }
 
         // Calculate Weaknesses
-        const allWeaknesses: { [key: string]: number } = {}; // typeName: damage_multiplier
+        const damageMultipliers: { [key: string]: number } = {};
+
         typeDetails.forEach(typeData => {
           typeData.damage_relations.double_damage_from.forEach((weaknessType: any) => {
-            allWeaknesses[weaknessType.name] = (allWeaknesses[weaknessType.name] || 0) + 1;
+            damageMultipliers[weaknessType.name] = (damageMultipliers[weaknessType.name] || 1) * 2;
           });
           typeData.damage_relations.half_damage_from.forEach((resistanceType: any) => {
-            allWeaknesses[resistanceType.name] = (allWeaknesses[resistanceType.name] || 0) - 0.5;
+            damageMultipliers[resistanceType.name] = (damageMultipliers[resistanceType.name] || 1) * 0.5;
           });
           typeData.damage_relations.no_damage_from.forEach((immunityType: any) => {
-            allWeaknesses[immunityType.name] = -Infinity; // Represents immunity
+            damageMultipliers[immunityType.name] = 0; 
           });
         });
 
-        this.pokemonWeaknesses = Object.keys(allWeaknesses)
-          .filter(type => allWeaknesses[type] > 0) // Only include actual weaknesses
-          .sort((a, b) => allWeaknesses[b] - allWeaknesses[a]) // Sort by highest damage
-          .map(type => ({ name: type, multiplier: allWeaknesses[type] }));
+        this.pokemonWeaknesses = Object.keys(damageMultipliers)
+          .filter(type => damageMultipliers[type] > 1)
+          .sort((a, b) => damageMultipliers[b] - damageMultipliers[a])
+          .map(type => ({ name: type, multiplier: damageMultipliers[type] }));
 
 
-        // Fetch Evolution Chain (requires another API call)
         if (speciesData.evolution_chain?.url) {
           this.pokemonService.getEvolutionChain(speciesData.evolution_chain.url).subscribe(
             (evoChainData: any) => {
-              this.pokemonEvolutionChain = this.parseEvolutionChain(evoChainData.chain);
-              const evoImageRequests: Observable<any>[] = this.pokemonEvolutionChain.map(evo =>
+              this.pokemonEvolutionChain = this.parseAllEvolutionBranches(evoChainData.chain);
+
+              const evoDetailRequests: Observable<any>[] = this.pokemonEvolutionChain.map(evo =>
                 this.pokemonService.getPokemonDetails(evo.name).pipe(
                   map(detail => {
-                    evo.image = detail.sprites.other?.['official-artwork']?.front_default ||
-                                detail.sprites.front_default ||
-                                'assets/placeholder.png';
-                    return evo;
+                    return {
+                      name: evo.name,
+                      id: evo.id,
+                      image: detail.sprites.other?.['official-artwork']?.front_default ||
+                             detail.sprites.front_default ||
+                             'assets/placeholder.png',
+                      types: detail.types
+                    };
                   })
                 )
               );
-              forkJoin(evoImageRequests).subscribe(
+              forkJoin(evoDetailRequests).subscribe(
                 (updatedEvoChain: any[]) => {
                   this.pokemonEvolutionChain = updatedEvoChain;
-                }
+                },
+                (error) => console.error('Error loading evolution Pokemon details:', error)
               );
-            }
+            },
+            (error) => console.error('Error loading evolution chain:', error)
           );
         }
 
@@ -168,7 +175,7 @@ export class DetailsPage implements OnInit {
                 this.errorMessage = '';
               },
               (baseError) => {
-                this.errorMessage = `Failed to load details for "<span class="math-inline">\{id\}" and its base form "</span>{baseName}". Please try again.`;
+                this.errorMessage = `Failed to load details for "${id}" and its base form "${baseName}". Please try again.`;
                 this.pokemonDetails = {
                   id: 0, name: id, sprites: { front_default: 'assets/placeholder.png' },
                   height: 'N/A', weight: 'N/A', types: [], abilities: [], stats: [],
@@ -197,32 +204,36 @@ export class DetailsPage implements OnInit {
   }
 
   // Helper function to get stat color (from the image you provided)
-  getStatColor(value: number): string { // <-- Esta função foi adicionada
+  getStatColor(value: number): string {
     if (value < 50) return 'danger'; // Red for low
     if (value < 90) return 'warning'; // Yellow for mid
     return 'success'; // Green for high
   }
 
-  // Helper function to parse evolution chain (recursive)
-  private parseEvolutionChain(chain: any): any[] {
-    const evolutionLine: any[] = [];
-    let currentChain = chain;
+  private parseAllEvolutionBranches(chain: any): any[] {
+    const evolutions: any[] = [];
+    const queue = [chain]
 
-    while (currentChain) {
-      evolutionLine.push({
-        name: currentChain.species.name,
-        id: currentChain.species.url.split('/').slice(-2, -1)[0], // Extract ID from URL
-        image: '' // Will be populated with official artwork later
-      });
+    while (queue.length > 0) {
+      const currentEvo = queue.shift();
 
-      if (currentChain.evolves_to.length > 0) {
-        // For simplicity, taking the first evolution. Real chains can branch.
-        currentChain = currentChain.evolves_to[0];
-      } else {
-        currentChain = null;
+      if (currentEvo && currentEvo.species) {
+        const speciesUrlParts = currentEvo.species.url.split('/');
+        const id = speciesUrlParts[speciesUrlParts.length - 2];
+
+        evolutions.push({
+          name: currentEvo.species.name,
+          id: id,
+          image: '',
+          types: []
+        });
+
+        currentEvo.evolves_to.forEach((nextEvo: any) => {
+          queue.push(nextEvo);
+        });
       }
     }
-    return evolutionLine;
+    return evolutions;
   }
 
   toggleFavorite() {
@@ -231,8 +242,7 @@ export class DetailsPage implements OnInit {
         id: this.pokemonDetails.id,
         name: this.pokemonDetails.name,
         image: this.pokemonDetails.sprites.front_default,
-        // Include other relevant data you might want to display in the favorites list
-        // e.g., category: this.pokemonDetails.category
+        category: this.pokemonDetails.category,
       };
       this.isFavorite = this.favoriteService.toggleFavorite(pokemonToSave);
       console.log(`Pokemon ${pokemonToSave.name} favorite status toggled to: ${this.isFavorite}`);

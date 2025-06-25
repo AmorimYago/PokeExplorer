@@ -8,7 +8,7 @@ ion-toolbar {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 80vh; // Garante que ocupa a tela para o spinner/erro
+  min-height: 80vh;
   text-align: center;
   color: var(--ion-color-medium);
 
@@ -28,7 +28,6 @@ ion-toolbar {
   }
 }
 
-
 .pokemon-details-container {
   padding: 16px;
 
@@ -40,81 +39,100 @@ ion-toolbar {
   }
 
   .main-info-section {
-    display: flex; // Usa flexbox para imagem e descrição lado a lado
-    flex-direction: column; // Padrão em telas pequenas
-    align-items: center; // Centraliza itens em coluna
-    padding: 15px; // Padding interno para o card
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
 
-    @media (min-width: 576px) { // Para telas maiores (landscape, tablets)
-      flex-direction: row; // Imagem e descrição lado a lado
-      text-align: left;
-      .image-area {
-        flex: 0 0 150px; // Largura fixa para a imagem
-        margin-right: 20px;
-      }
-      .description-area {
-        flex: 1; // Ocupa o resto do espaço
-      }
+    @media (min-width: 768px) {
+      flex-direction: row;
+      align-items: flex-start;
     }
 
     .image-area {
-      text-align: center; // Centraliza a imagem e o título abaixo dela
-      margin-bottom: 15px; // Espaço abaixo da imagem em layout de coluna
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
 
-      ion-img {
-        width: 150px;
-        height: 150px;
+      @media (min-width: 768px) {
+        flex: 0 0 475px; // Largura fixa para a imagem em telas maiores
+        margin-right: 20px;
+      }
+
+      .main-pokemon-image {
+        width: 475px; // Defina a largura e altura exatas como 475px
+        height: 475px;
         margin: 0 auto;
-        object-fit: contain;
-        background: var(--ion-color-light); // Fundo para a imagem
-        border-radius: 50%; // Deixa a imagem redonda
-        padding: 5px;
-        box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        object-fit: contain; // Garante que a imagem se encaixe sem cortar
+        background: var(--ion-color-light); // Fundo claro para a imagem
+        border-radius: 0; // Remova o arredondamento para deixar quadrada
+        padding: 0; // Remova o padding
+        box-shadow: none; // Remova a sombra interna para um look mais limpo
+
+        // Para responsividade em telas menores, adicione um max-width
+        @media (max-width: 767px) {
+          max-width: 100%; // Ocupa 100% da largura disponível em telas menores
+          height: auto; // Altura automática para manter proporção
+          max-height: 250px; // Limite a altura em telas menores para não ocupar tudo
+        }
       }
       ion-card-title {
-        font-size: 1.6em;
+        font-size: 1.8em;
         margin-top: 10px;
         margin-bottom: 5px;
         text-align: center;
       }
       .pokemon-id {
-        font-size: 0.9em;
+        font-size: 1.1em;
         color: var(--ion-color-medium);
         text-align: center;
         display: block;
+        font-weight: bold;
       }
     }
 
     .description-area {
-      flex: 1; // Ocupa o espaço restante
+      flex: 1;
       padding-top: 10px;
+      text-align: left; // Alinha o texto à esquerda por padrão
 
       .description-text {
-        font-size: 0.95em;
+        font-size: 1em;
         color: var(--ion-color-dark-tint);
         text-align: justify;
         margin-bottom: 15px;
-        line-height: 1.4;
+        line-height: 1.5;
       }
       ion-list {
         background: transparent;
+        padding: 0;
+        margin: 0; // Garante que não há margens padrão
         ion-item {
           --background: transparent;
           --inner-padding-end: 0;
-          --padding-start: 0; // Remove padding lateral para alinhar com descrição
+          --padding-start: 0;
+          --inner-border-width: 0; // Remove bordas internas padrão do Ionic
+          --border-width: 0; // Remove bordas padrão do Ionic
           padding-top: 5px;
           padding-bottom: 5px;
-          border-bottom: 1px solid var(--ion-color-light);
+          display: flex; // Usa flex para alinhar label e text
+          justify-content: space-between; // Espaça label e text
+          align-items: center;
+
           &:last-child { border-bottom: none; }
           ion-label {
             font-weight: bold;
             color: var(--ion-color-dark);
             font-size: 0.9em;
+            flex-shrink: 0; // Impede que o label encolha
+            margin-right: 10px; // Espaçamento entre label e text
           }
           ion-text[slot="end"] {
             color: var(--ion-color-medium-shade);
             font-size: 0.9em;
-            text-transform: capitalize; // Para habilidades e tipos
+            text-transform: capitalize;
+            text-align: right; // Alinha o valor à direita
+            flex-grow: 1; // Permite que o valor ocupe o espaço restante
           }
         }
       }
@@ -128,40 +146,44 @@ ion-toolbar {
       margin-bottom: 10px;
       color: var(--ion-color-dark);
       font-weight: bold;
+      font-size: 1.2em;
     }
     .type-badges, .weakness-badges {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px; // Espaço entre os chips
+      gap: 8px;
       ion-chip {
-        --background: var(--ion-color-light); // Cor de fundo padrão
-        --color: var(--ion-color-dark); // Cor do texto padrão
+        // Estilo base já definido, adicionaremos cores específicas via classe
         font-weight: bold;
         text-transform: uppercase;
-        padding: 5px 10px;
+        padding: 5px 12px;
         border-radius: 15px;
+        // Remova --background e --color aqui, pois serão definidos pelas classes específicas
       }
-      /* Cores para os chips de tipo/fraqueza (exemplos, adicione mais conforme necessário) */
-      ion-chip[color="normal"] { --background: #A8A878; --color: #fff; }
-      ion-chip[color="fire"] { --background: #F08030; --color: #fff; }
-      ion-chip[color="water"] { --background: #6890F0; --color: #fff; }
-      ion-chip[color="grass"] { --background: #78C850; --color: #fff; }
-      ion-chip[color="electric"] { --background: #F8D030; --color: #fff; }
-      ion-chip[color="ice"] { --background: #98D8D8; --color: #fff; }
-      ion-chip[color="fighting"] { --background: #C03028; --color: #fff; }
-      ion-chip[color="poison"] { --background: #A040A0; --color: #fff; }
-      ion-chip[color="ground"] { --background: #E0C068; --color: #fff; }
-      ion-chip[color="flying"] { --background: #A890F0; --color: #fff; }
-      ion-chip[color="psychic"] { --background: #F85888; --color: #fff; }
-      ion-chip[color="bug"] { --background: #A8B820; --color: #fff; }
-      ion-chip[color="rock"] { --background: #B8A038; --color: #fff; }
-      ion-chip[color="ghost"] { --background: #705898; --color: #fff; }
-      ion-chip[color="dragon"] { --background: #7038F8; --color: #fff; }
-      ion-chip[color="steel"] { --background: #B8B8D0; --color: #fff; }
-      ion-chip[color="dark"] { --background: #705848; --color: #fff; }
-      ion-chip[color="fairy"] { --background: #EE99AC; --color: #fff; }
     }
   }
+
+  /* Cores para os chips de tipo/fraqueza (background-color-NOME_DO_TIPO) */
+  /* ADICIONADO !important para garantir a aplicação */
+  .background-color-normal { --background: #A8A878 !important; --color: #fff !important; }
+  .background-color-fire { --background: #F08030 !important; --color: #fff !important; }
+  .background-color-water { --background: #6890F0 !important; --color: #fff !important; }
+  .background-color-grass { --background: #78C850 !important; --color: #fff !important; }
+  .background-color-electric { --background: #F8D030 !important; --color: #fff !important; }
+  .background-color-ice { --background: #98D8D8 !important; --color: #fff !important; }
+  .background-color-fighting { --background: #C03028 !important; --color: #fff !important; }
+  .background-color-poison { --background: #A040A0 !important; --color: #fff !important; }
+  .background-color-ground { --background: #E0C068 !important; --color: #fff !important; }
+  .background-color-flying { --background: #A890F0 !important; --color: #fff !important; }
+  .background-color-psychic { --background: #F85888 !important; --color: #fff !important; }
+  .background-color-bug { --background: #A8B820 !important; --color: #fff !important; }
+  .background-color-rock { --background: #B8A038 !important; --color: #fff !important; }
+  .background-color-ghost { --background: #705898 !important; --color: #fff !important; }
+  .background-color-dragon { --background: #7038F8 !important; --color: #fff !important; }
+  .background-color-steel { --background: #B8B8D0 !important; --color: #fff !important; }
+  .background-color-dark { --background: #705848 !important; --color: #fff !important; }
+  .background-color-fairy { --background: #EE99AC !important; --color: #fff !important; }
+
 
   .stats-list {
     padding: 10px;
@@ -171,21 +193,20 @@ ion-toolbar {
       margin-bottom: 8px;
 
       .stat-name {
-        flex: 0 0 60px; // Largura fixa para o nome da stat (HP, ATK, etc.)
+        flex: 0 0 60px;
         font-weight: bold;
         font-size: 0.9em;
         color: var(--ion-color-dark);
       }
 
       .stat-bar-container {
-        flex: 1; // Ocupa o resto do espaço
+        flex: 1;
         display: flex;
         align-items: center;
         margin-left: 10px;
 
         ion-progress-bar {
-          --background: var(--ion-color-light-shade); // Fundo da barra
-          --progress-background: var(--ion-color-primary); // Cor do progresso (alterada pela função)
+          --background: var(--ion-color-light-shade);
           height: 8px;
           border-radius: 4px;
           flex: 1;
@@ -195,7 +216,7 @@ ion-toolbar {
         .stat-value {
           font-size: 0.9em;
           font-weight: bold;
-          min-width: 30px; // Garante espaço para o número
+          min-width: 30px;
           text-align: right;
           color: var(--ion-color-dark-tint);
         }
@@ -210,11 +231,14 @@ ion-toolbar {
     gap: 10px;
 
     ion-img {
-      width: 80px;
-      height: 80px;
+      width: 150px; // Aumentado para o tamanho da evo line
+      height: 150px;
       object-fit: contain;
-      border: 1px solid var(--ion-color-medium-tint);
-      border-radius: 5px;
+      background: var(--ion-color-light); // Fundo para a imagem
+      border-radius: 50%; // Borda arredondada como a principal antes
+      padding: 5px; // Padding interno para a imagem
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1); // Sombra interna
+      margin-bottom: 5px; // Espaçamento abaixo da imagem
     }
   }
 
@@ -223,7 +247,7 @@ ion-toolbar {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 15px; // Espaço entre os Pokémons na linha evolutiva
+    gap: 15px;
     padding: 10px;
 
     .evolution-item {
@@ -231,31 +255,60 @@ ion-toolbar {
       flex-direction: column;
       align-items: center;
       text-align: center;
-      cursor: pointer; // Indica que é clicável
+      cursor: pointer;
+      position: relative;
+
       ion-img {
-        width: 100px;
-        height: 100px;
+        width: 150px; // Mantido 150px para consistência
+        height: 150px;
         object-fit: contain;
-        border: 1px solid var(--ion-color-medium-tint);
-        border-radius: 5px;
+        background: var(--ion-color-light);
+        border-radius: 50%; // Borda arredondada
+        padding: 5px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        margin-bottom: 5px;
       }
-      ion-label {
-        margin-top: 5px;
-        font-size: 0.9em;
+      .evo-name {
+        font-size: 1em;
         font-weight: bold;
         color: var(--ion-color-dark);
+        margin-bottom: 2px;
+      }
+      .evo-number {
+        font-size: 0.85em;
+        color: var(--ion-color-medium-shade);
+        margin-bottom: 5px;
+      }
+      .evo-types {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 5px;
+        ion-chip {
+          font-size: 0.7em;
+          padding: 3px 6px;
+        }
+      }
+
+      ion-icon.evolution-arrow {
+        position: absolute;
+        right: -20px;
+        font-size: 2em;
+        color: var(--ion-color-medium);
+        transform: translateY(-50%);
+        top: 50%;
+        margin-left: 10px;
+
+        @media (max-width: 767px) {
+          display: none;
+        }
+        @media (min-width: 768px) {
+          display: block;
+        }
+      }
+      &:not(:last-child) {
+        margin-right: 40px;
       }
     }
   }
-}
-
-// Cores para as barras de progresso das stats (definidas na função getStatColor)
-// Cores base para o tema
-:root {
-  --ion-color-hp-low: #F00; /* Red */
-  --ion-color-hp-mid: #FFD700; /* Gold */
-  --ion-color-hp-high: #0F0; /* Green */
-  --ion-color-stat-low: #f44336;
-  --ion-color-stat-mid: #ffeb3b;
-  --ion-color-stat-high: #4caf50;
 }

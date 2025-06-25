@@ -3,12 +3,12 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>
-      {{ pokemonDetails?.name | titlecase }} Details
-    </ion-title>
+    <ion-title> {{ pokemonDetails?.name | titlecase }} Details </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="toggleFavorite()">
-        <ion-icon [name]="isFavorite ? 'heart-sharp' : 'heart-outline'"></ion-icon>
+        <ion-icon
+          [name]="isFavorite ? 'heart-sharp' : 'heart-outline'"
+        ></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -23,25 +23,44 @@
   <div *ngIf="errorLoading" class="error-message">
     <ion-icon name="alert-circle-outline"></ion-icon>
     <p>{{ errorMessage }}</p>
-    <div *ngIf="pokemonDetails && pokemonDetails.id === 0" class="fallback-pokemon-display">
-      <ion-img [src]="pokemonDetails.sprites.front_default" alt="Placeholder" class="main-pokemon-image"></ion-img>
+    <div
+      *ngIf="pokemonDetails && pokemonDetails.id === 0"
+      class="fallback-pokemon-display"
+    >
+      <ion-img
+        [src]="pokemonDetails.sprites.front_default"
+        alt="Placeholder"
+        class="main-pokemon-image"
+      ></ion-img>
       <h3>{{ pokemonDetails.name | titlecase }}</h3>
     </div>
   </div>
 
-  <div *ngIf="!isLoading && pokemonDetails && !errorLoading" class="pokemon-details-container">
+  <div
+    *ngIf="!isLoading && pokemonDetails && !errorLoading"
+    class="pokemon-details-container"
+  >
     <ion-card class="main-info-section">
       <div class="image-area">
-        <ion-img [src]="pokemonDetails.sprites.front_default" [alt]="pokemonDetails.name" class="main-pokemon-image" (ionError)="pokemonDetails.sprites.front_default = 'assets/placeholder.png'"></ion-img>
+        <ion-img
+          [src]="pokemonDetails.sprites.front_default"
+          [alt]="pokemonDetails.name"
+          class="main-pokemon-image"
+          (ionError)="pokemonDetails.sprites.front_default = 'assets/placeholder.png'"
+        ></ion-img>
         <ion-card-title>{{ pokemonDetails.name | titlecase }}</ion-card-title>
-        <ion-text class="pokemon-id">#{{ pokemonDetails.id }}</ion-text>
+        <ion-text class="pokemon-id"
+          >Nº {{ pokemonDetails.id | number:'3.0' }}</ion-text
+        >
       </div>
       <div class="description-area">
         <p class="description-text">{{ pokemonDetails.description }}</p>
         <ion-list lines="none">
           <ion-item>
             <ion-label>Height:</ion-label>
-            <ion-text slot="end">{{ pokemonDetails.height / 10 | number:'1.1-1' }} m</ion-text>
+            <ion-text slot="end"
+              >{{ pokemonDetails.height / 10 | number:'1.1-1' }} m</ion-text
+            >
           </ion-item>
           <ion-item>
             <ion-label>Category:</ion-label>
@@ -49,12 +68,16 @@
           </ion-item>
           <ion-item>
             <ion-label>Weight:</ion-label>
-            <ion-text slot="end">{{ pokemonDetails.weight / 10 | number:'1.1-1' }} kg</ion-text>
+            <ion-text slot="end"
+              >{{ pokemonDetails.weight / 10 | number:'1.1-1' }} kg</ion-text
+            >
           </ion-item>
           <ion-item>
             <ion-label>Abilities:</ion-label>
             <ion-text slot="end">
-              <span *ngFor="let ability of pokemonDetails.abilities; last as isLast">
+              <span
+                *ngFor="let ability of pokemonDetails.abilities; last as isLast"
+              >
                 {{ ability.ability.name | titlecase }}{{ !isLast ? ', ' : '' }}
               </span>
             </ion-text>
@@ -75,20 +98,30 @@
         <div class="type-section">
           <h4>Types:</h4>
           <div class="type-badges">
-            <ion-chip *ngFor="let type of pokemonDetails.types" [color]="type.type.name">{{ type.type.name | titlecase }}</ion-chip>
+            <ion-chip
+              *ngFor="let type of pokemonDetails.types"
+              [class]="'background-color-' + type.type.name"
+            >
+              {{ type.type.name | titlecase }}
+            </ion-chip>
           </div>
         </div>
         <div *ngIf="pokemonWeaknesses.length > 0" class="weakness-section">
           <h4>Weaknesses:</h4>
           <div class="weakness-badges">
-            <ion-chip *ngFor="let weakness of pokemonWeaknesses" [color]="weakness.name">
-              {{ weakness.name | titlecase }} (x{{ weakness.multiplier }})
+            <ion-chip
+              *ngFor="let weakness of pokemonWeaknesses"
+              [class]="'background-color-' + weakness.name"
+            >
+              {{ weakness.name | titlecase }}
+              <span *ngIf="weakness.multiplier > 1">
+                (x{{ weakness.multiplier }})</span
+              >
             </ion-chip>
           </div>
         </div>
       </ion-card-content>
     </ion-card>
-
 
     <ion-card>
       <ion-card-header>
@@ -97,9 +130,14 @@
       <ion-card-content>
         <div class="stats-list">
           <div *ngFor="let stat of pokemonDetails.stats" class="stat-item">
-            <ion-label class="stat-name">{{ stat.stat.name | uppercase }}:</ion-label>
+            <ion-label class="stat-name"
+              >{{ stat.stat.name | uppercase }}:</ion-label
+            >
             <div class="stat-bar-container">
-              <ion-progress-bar [value]="stat.base_stat / 255" [color]="getStatColor(stat.base_stat)"></ion-progress-bar>
+              <ion-progress-bar
+                [value]="stat.base_stat / 255"
+                [color]="getStatColor(stat.base_stat)"
+              ></ion-progress-bar>
               <span class="stat-value">{{ stat.base_stat }}</span>
             </div>
           </div>
@@ -112,9 +150,24 @@
         <ion-card-title>Other Sprites</ion-card-title>
       </ion-card-header>
       <ion-card-content class="sprite-gallery">
-        <ion-img *ngIf="pokemonDetails.sprites.back_default" [src]="pokemonDetails.sprites.back_default" alt="Back Default" (ionError)="pokemonDetails.sprites.back_default = 'assets/placeholder.png'"></ion-img>
-        <ion-img *ngIf="pokemonDetails.sprites.front_shiny" [src]="pokemonDetails.sprites.front_shiny" alt="Front Shiny" (ionError)="pokemonDetails.sprites.front_shiny = 'assets/placeholder.png'"></ion-img>
-        <ion-img *ngIf="pokemonDetails.sprites.back_shiny" [src]="pokemonDetails.sprites.back_shiny" alt="Back Shiny" (ionError)="pokemonDetails.sprites.back_shiny = 'assets/placeholder.png'"></ion-img>
+        <ion-img
+          *ngIf="pokemonDetails.sprites.back_default"
+          [src]="pokemonDetails.sprites.back_default"
+          alt="Back Default"
+          (ionError)="pokemonDetails.sprites.back_default = 'assets/placeholder.png'"
+        ></ion-img>
+        <ion-img
+          *ngIf="pokemonDetails.sprites.front_shiny"
+          [src]="pokemonDetails.sprites.front_shiny"
+          alt="Front Shiny"
+          (ionError)="pokemonDetails.sprites.front_shiny = 'assets/placeholder.png'"
+        ></ion-img>
+        <ion-img
+          *ngIf="pokemonDetails.sprites.back_shiny"
+          [src]="pokemonDetails.sprites.back_shiny"
+          alt="Back Shiny"
+          (ionError)="pokemonDetails.sprites.back_shiny = 'assets/placeholder.png'"
+        ></ion-img>
       </ion-card-content>
     </ion-card>
 
@@ -123,12 +176,36 @@
         <ion-card-title>Evolution Line</ion-card-title>
       </ion-card-header>
       <ion-card-content class="evolution-line-gallery">
-        <div *ngFor="let evoPokemon of pokemonEvolutionChain" class="evolution-item" [routerLink]="['/details', evoPokemon.id]">
-          <ion-img [src]="evoPokemon.image" [alt]="evoPokemon.name" (ionError)="evoPokemon.image = 'assets/placeholder.png'"></ion-img>
-          <ion-label>{{ evoPokemon.name | titlecase }}</ion-label>
+        <div
+          *ngFor="let evoPokemon of pokemonEvolutionChain; let isLast = last"
+          class="evolution-item"
+          [routerLink]="['/details', evoPokemon.id]"
+        >
+          <ion-img
+            [src]="evoPokemon.image"
+            [alt]="evoPokemon.name"
+            (ionError)="evoPokemon.image = 'assets/placeholder.png'"
+          ></ion-img>
+          <ion-label class="evo-name"
+            >{{ evoPokemon.name | titlecase }}</ion-label
+          >
+          <ion-text class="evo-number"
+            >Nº {{ evoPokemon.id | number:'3.0' }}</ion-text
+          >
+          <div class="evo-types">
+            <ion-chip
+              *ngFor="let type of evoPokemon.types"
+              [class]="'background-color-' + type.type.name"
+              >{{ type.type.name | titlecase }}</ion-chip
+            >
+          </div>
+          <ion-icon
+            *ngIf="!isLast"
+            name="arrow-forward-outline"
+            class="evolution-arrow"
+          ></ion-icon>
         </div>
       </ion-card-content>
     </ion-card>
-
   </div>
 </ion-content>
